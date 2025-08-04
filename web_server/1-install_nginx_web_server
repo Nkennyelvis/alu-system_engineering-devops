@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
 # Install nginx web server
 
-sudo apt-get update -y
-sudo apt-get install -y nginx
-sudo echo "Holberton School" > /var/www/html/index.html
-sudo service nginx restart
+# Install nginx
+apt-get update -y
+apt-get install -y nginx
+
+# Make sure nginx is enabled and started using init script (not systemctl)
+service nginx start
+
+# Create a simple HTML page with required content
+echo "Holberton School" > /var/www/html/index.html
+
+# Restart nginx using init script
+service nginx restart
