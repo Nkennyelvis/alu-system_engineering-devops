@@ -1,29 +1,15 @@
 #!/usr/bin/env bash
-# Configure Nginx so that its HTTP response contains
-# a custom header
-#
-balancer="\
-frontend haproxy_balancer
+# bash script that installs HAProxy & makes configurations to meet the following requirements:
+
+apt-get -y install software-properties-common
+add-apt-repository ppa:vbernat/haproxy-1.8
+apt-get update
+apt-get -y install haproxy
+echo "ENABLED=1" >> /etc/default/haproxy
+printf %s "listen 6718-web
     bind *:80
     mode http
-    default_backend webservers
-    
-backend webservers
     balance roundrobin
-    server N/A check
-    server N/A check
-"
-# Update packages
-apt-get -y update
-apt-get -y upgrade
-
-# Add HAProxy PPA
-apt-get -y install software-properties-common
-add-apt-repository -y ppa:vbernat/haproxy-2.5
-apt-get -y update
-
-# Install HAProxy
-apt-get -y install haproxy
-cp -a /etc/haproxy/haproxy.cfg{,.orig}
-echo "$balancer" >> /etc/haproxy/haproxy.cfg
-service haproxy restart
+    server 6718-web-01 3.82.191.2:80 check
+" >> /etc/haproxy/haproxy.cfg
+sudo service haproxy restart
